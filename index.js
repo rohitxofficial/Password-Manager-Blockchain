@@ -143,7 +143,7 @@ const decryptData = (Securitykey, message, initVector) => {
 
 const syncChains = () => {
   request(
-    { url: ROOT_NODE_ADDRESS + "/api/blocks" },
+    { url: ROOT_NODE_ADDRESS + "/blocks" },
     (error, response, body) => {
       if (!error && response.statusCode === 200) {
         const rootChain = JSON.parse(body);
