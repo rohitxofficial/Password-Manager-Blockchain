@@ -4,7 +4,6 @@ const request = require("request");
 const Blockchain = require("./server/blockchain");
 const PubSub = require("./server/app/pubsub");
 const crypto = require("crypto");
-const Ownedblock = require("./database");
 
 const app = express();
 const blockchain = new Blockchain();
@@ -40,84 +39,49 @@ app.get("/blocks", (req, res) => {
 
 app.post("/view", (req, res) => {
   var masID = req.body.masID;
-  var masPASS = req.body.masPASS;
+  var masPASS = req.body.masPASS.substr(0, 32);
+  var IV = req.body.masPASS.substr(32, 16);
 
   var finalData = [];
 
-  Ownedblock.findOne({ username: masID }, function (err, docs) {
-    if (err) {
-      console.log(err);
-    } else if (docs == null) {
-      res.send("No Data Available");
-    } else {
-      docs.myblocks.forEach((element) => {
-        var tempData = [];
+  for (var i = 1; i < blockchain.chain.length; i++) {
+    var curr = blockchain.chain[i].data;
 
-        var temp = blockchain.chain[element].data;
+    if (curr[3] == masID) {
+      var temp = [];
 
-        var IV = temp[3];
-        var TITLE = temp[0];
-        var USERNAME = decryptData(masPASS, temp[1], IV);
-        var PASSWORD = decryptData(masPASS, temp[2], IV);
+      var TITLE = curr[0];
+      var USERNAME = decryptData(masPASS, curr[1], IV);
+      var PASSWORD = decryptData(masPASS, curr[2], IV);
 
-        tempData.push(TITLE, USERNAME, PASSWORD);
+      temp.push(TITLE, USERNAME, PASSWORD);
 
-        finalData.push(tempData);
-      });
-      res.send(finalData);
+      finalData.push(temp);
     }
-  });
+  }
+
+  res.send(finalData);
 });
 
 app.post("/add", (req, res) => {
   var masterUsername = req.body.masterusername;
 
-  var initVector = makeString(16);
+  var initVector = req.body.masterkey.substr(32, 16);
 
-  var masterKey = req.body.masterkey;
+  var masterKey = req.body.masterkey.substr(0, 32);
 
   const finalUsername = encryptData(masterKey, req.body.username, initVector);
 
   const finalPassword = encryptData(masterKey, req.body.password, initVector);
 
-  var data = [req.body.title, finalUsername, finalPassword, initVector];
+  var data = [req.body.title, finalUsername, finalPassword, masterUsername];
 
   blockchain.addBlock({ data });
 
   pubsub.broadcastChain();
 
-  var { index } = blockchain.chain[blockchain.chain.length - 1];
-
-  Ownedblock.findOne({ username: masterUsername }, function (err, docs) {
-    if (err) {
-      console.log(err);
-    } else if (docs == null) {
-      console.log("MAKING NEW BLOCK");
-      const myblock = new Ownedblock({
-        username: masterUsername,
-        myblocks: index,
-      });
-
-      myblock.save();
-    } else {
-      docs.myblocks.push(index);
-      docs.save();
-    }
-  });
-
   res.sendFile(__dirname + "/public/successful.html");
 });
-
-const makeString = (length) => {
-  var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
 
 const encryptData = (Securitykey, message, initVector) => {
   const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
@@ -142,18 +106,15 @@ const decryptData = (Securitykey, message, initVector) => {
 };
 
 const syncChains = () => {
-  request(
-    { url: ROOT_NODE_ADDRESS + "/blocks" },
-    (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        const rootChain = JSON.parse(body);
+  request({ url: ROOT_NODE_ADDRESS + "/blocks" }, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      const rootChain = JSON.parse(body);
 
-        console.log("replace chain on a sync with " + rootChain);
+      console.log("replace chain on a sync with " + rootChain);
 
-        blockchain.replaceChain(rootChain);
-      }
+      blockchain.replaceChain(rootChain);
     }
-  );
+  });
 };
 
 let PEER_PORT;
