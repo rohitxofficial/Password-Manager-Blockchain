@@ -3,7 +3,7 @@ document.querySelector(".generate").addEventListener("click", function () {
   var p2 = document.getElementById("p2");
 
   p1.innerHTML = "Master Username: " + makeString(16);
-  p2.innerHTML = "Master Key: " + makeString(32);
+  p2.innerHTML = "Master Key: " + makeString(48);
 
   p1.classList.remove("invisible");
   p2.classList.remove("invisible");
