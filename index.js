@@ -25,6 +25,10 @@ app.get("/view", (req, res) => {
   res.sendFile(__dirname + "/public/view.html");
 });
 
+app.get("/generate", (req, res) => {
+  res.sendFile(__dirname + "/public/generate.html");
+});
+
 app.get("/add", (req, res) => {
   res.sendFile(__dirname + "/public/add.html");
 });
