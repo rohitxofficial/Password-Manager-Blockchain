@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Password Manager - Generate Strong Password</title>
+</head>
+
+<body>
+    <nav class="navbar background">
+        <ul class="nav-list">
+            <div class="logo"><img src="img/logo.png" alt="Logo"></div>
+            <li><a href="/start">Getting Started</a></li>
+            <li><a href="/add">Add Passwords</a></li>
+            <li><a href="/view">View Passwords</a></li>
+            <li><a href="/blocks" target="_blank">View Blockchain</a></li>
+            <li><a href="/generate">Generate Strong Password</a></li>
+        </ul>
+    </nav>
+
+    <section class="background firstSection text-center">
+        <dix class="box-main">
+            <div class="firstHalf">
+                <div class="container">
+                    <p class="text-big">Generate your Strong Password!</p>
+                    <br>
+                    <p class="text-small">Select Specifications and Click Generate, it's that SIMPLE!</p>
+                    <br>
+                    <div class="result-container">
+                        <span id="result"></span>
+                    </div>
+                    <div class="settings">
+                        <div class="setting">
+                            <label>Password length</label>
+                            <input class="lengthbox" type="number" id="length" min='4' max='50' value='16' />
+                        </div>
+                        <div class="setting">
+                            <label>Include uppercase letters</label>
+                            <input class="checkbox" type="checkbox" id="uppercase" checked />
+                        </div>
+                        <div class="setting">
+                            <label>Include lowercase letters</label>
+                            <input class="checkbox" type="checkbox" id="lowercase" checked />
+                        </div>
+                        <div class="setting">
+                            <label>Include numbers</label>
+                            <input class="checkbox" type="checkbox" id="numbers" checked />
+                        </div>
+                        <div class="setting">
+                            <label>Include symbols</label>
+                            <input class="checkbox" type="checkbox" id="symbols" checked />
+                        </div>
+                    </div>
+                    <button class="btn" id="generatePassword">
+                        Generate password
+                    </button>
+                    <br>
+                    <b>
+                        <p class="text-small">NOTE: WE DONT STORE GENERATED PASSWORD.</p>
+                    </b>
+                </div>
+            </div>
+        </dix>
+    </section>
+
+    <footer>
+        <p class="text-footer">Copyright &copy; rohitxofficial - All rights reserved.</p>
+    </footer>
+
+    <script src="scriptPassword.js"></script>
+
+</body>
+
+</html>
