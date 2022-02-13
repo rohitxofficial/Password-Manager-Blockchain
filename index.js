@@ -121,13 +121,13 @@ const syncChains = () => {
   });
 };
 
-let PEER_PORT;
+// let PEER_PORT;
 
-if (process.env.GENERATE_PEER_PORT === "true") {
-  PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
-}
+// if (process.env.GENERATE_PEER_PORT === "true") {
+//   PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
+// }
 
-const PORT = PEER_PORT || DEFAULT_PORT;
+// const PORT = PEER_PORT || DEFAULT_PORT;
 app.listen(PORT, () => {
   console.log("listening at localhost:" + PORT);
 
