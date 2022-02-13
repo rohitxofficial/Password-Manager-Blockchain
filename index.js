@@ -128,7 +128,7 @@ const syncChains = () => {
 // }
 
 // const PORT = PEER_PORT || DEFAULT_PORT;
-const PORT = DEFAULT_PORT || process.env.PORT;
+const PORT = process.env.PORT || DEFAULT_PORT;
 app.listen(PORT, () => {
   console.log("listening at localhost:" + PORT);
 
